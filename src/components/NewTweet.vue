@@ -11,15 +11,15 @@
           <label for="newTweet" class="form-label fw-bold"
           >Tweet</label>
           <textarea id="newTweet" rows="4" class="form-control"
-                    v-model="tweet.content"
+                    v-model="state.tweet.content"
                     :class="{'is-invalid' : tweetCount > 160}"
           ></textarea>
         </div>
         <div class="mb-3">
-          <select class="form-select" v-model="tweet.tweetType">
+          <select class="form-select" v-model="state.tweet.tweetType">
             <option
                 :value="option.value"
-                v-for="(option,index) in tweetTypes"
+                v-for="(option,index) in state.tweetTypes"
                 :key="index"
             > {{ option.name }}
             </option>
@@ -32,13 +32,12 @@
 </template>
 
 <script>
+import {reactive, computed} from 'vue'
+
 export default {
   name: "NewTweet",
-  props: {
-    user: {type: Object, required: true},
-  },
-  data() {
-    return {
+  setup(props, ctx) {
+    const state = reactive({
       tweet: {
         content: '',
         tweetType: 'instant'
@@ -47,21 +46,22 @@ export default {
         {value: 'draft', name: 'Draft'},
         {value: 'instant', name: 'Instant Tweet'},
       ],
-    }
-  },
-  methods: {
-    postTweet() {
-      if (this.tweet && this.tweet.tweetType !== 'draft') {
-        this.$emit('new-tweet', this.tweet)
-        this.tweet.content = ''
+    })
+    const tweetCount = computed(() => state.tweet.content.length)
+
+    function postTweet() {
+      if (state.tweet && state.tweet.tweetType !== 'draft') {
+        ctx.emit('new-tweet', state.tweet)
+        state.tweet.content = ''
       }
-    },
-  },
-  computed: {
-    tweetCount() {
-      return this.tweet.content.length;
     }
-  }
+
+    return {
+      state,
+      tweetCount,
+      postTweet
+    }
+  },
 }
 </script>
 

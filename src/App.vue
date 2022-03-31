@@ -1,6 +1,6 @@
 <template>
   <main>
-    <UserProfile/>
+    <router-view></router-view>
   </main>
 </template>
 <script>

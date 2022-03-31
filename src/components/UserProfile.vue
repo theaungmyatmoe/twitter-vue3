@@ -1,52 +1,6 @@
-<script>
-import TweetItem from "./TweetItem.vue";
-import NavBar from "./NavBar";
-import NewTweet from "./NewTweet";
-import {reactive, computed, toRefs} from 'vue'
-
-export default {
-  name: 'UserProfile',
-  components: {NewTweet, NavBar, TweetItem},
-  setup(props, ctx) {
-    const state = reactive({
-      followers: 0,
-      user: {
-        first_name: 'Aung',
-        last_name: 'Myat Moe',
-        age: 19,
-        username: 'amm834',
-        isAdmin: true,
-        tweets: [
-          {id: 1, content: 'Content one'},
-          {id: 2, content: 'Content two'},
-        ]
-      },
-    })
-
-
-    function updateTweets(tweet) {
-      const newTweet = {
-        ...tweet,
-        id: state.user.tweets.length + 1
-      }
-      state.user.tweets.unshift(newTweet)
-    }
-
-    const full_name = computed(() => `${this.user.first_name} ${this.user.last_name}`
-    )
-
-    return {
-      ...toRefs(state),
-      updateTweets,
-      full_name
-    }
-  },
-}
-</script>
-
-
 <template>
   <main>
+
     <NavBar :user="user"/>
     <div class="container">
       <div class="row my-3">
@@ -77,3 +31,44 @@ export default {
     </div>
   </main>
 </template>
+<script>
+import TweetItem from "./TweetItem.vue";
+import NavBar from "./NavBar";
+import NewTweet from "./NewTweet";
+import {reactive, computed, toRefs} from 'vue'
+import {useRoute} from 'vue-router'
+import {users} from '../assets/users'
+
+export default {
+  name: 'UserProfile',
+  components: {NewTweet, NavBar, TweetItem},
+  setup(props, ctx) {
+
+    const route = useRoute()
+    const userId = computed(() => route.params.userId)
+
+    const state = reactive({
+      followers: 0,
+      user: users[userId.value - 1] ?? users[0]
+    })
+
+
+    function updateTweets(tweet) {
+      const newTweet = {
+        ...tweet,
+        id: state.user.tweets.length + 1
+      }
+      state.user.tweets.unshift(newTweet)
+    }
+
+    const full_name = computed(() => `${this.user.first_name} ${this.user.last_name}`
+    )
+
+    return {
+      ...toRefs(state),
+      updateTweets,
+      full_name,
+    }
+  },
+}
+</script>

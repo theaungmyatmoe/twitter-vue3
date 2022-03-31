@@ -25,7 +25,7 @@ export default {
           {id: 1, content: 'Content one'},
           {id: 2, content: 'Content two'},
         ]
-      }
+      },
     }
   },
   mounted() {
@@ -58,6 +58,9 @@ export default {
   computed: {
     full_name() {
       return `${this.user.first_name} ${this.user.last_name}`
+    },
+    tweetCount() {
+      return this.tweet.content.length;
     }
   },
 
@@ -71,33 +74,43 @@ export default {
       <div class="col-md-4">
         <div class="card">
           <div class="card-body">
+            <!--            Profile info-->
             <div>
               <h3 class="display-6 fw-bold">@{{ user.username }}</h3>
               <span v-if="user.isAdmin" class="badge bg-success"> Admin </span>
               <span class="badge bg-primary ms-3">{{ followers }} Followers</span>
             </div>
-            <!-- New tweet-->
-            <div class="mt-3">
-              <form @submit.prevent="postTweet">
-                <div class="mb-3">
-                  <label for="newTweet" class="form-label fw-bold">New Tweet</label>
-                  <textarea id="newTweet" rows="4" class="form-control"
-                            v-model="tweet.content"
-                  ></textarea>
-                </div>
-                <div class="mb-3">
-                  <select class="form-select" v-model="tweet.tweetType">
-                    <option
-                        :value="option.value"
-                        v-for="(option,index) in tweetTypes"
-                        :key="index"
-                    > {{ option.name }}
-                    </option>
-                  </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Tweet</button>
-              </form>
-            </div>
+          </div>
+        </div>
+
+        <!--             New tweet-->
+        <div class="card mt-3">
+          <div class="card-header">
+            New Tweet
+            ( {{ tweetCount }}/160)
+          </div>
+          <div class="card-body">
+            <form @submit.prevent="postTweet">
+              <div class="mb-3">
+                <label for="newTweet" class="form-label fw-bold"
+                >Tweet</label>
+                <textarea id="newTweet" rows="4" class="form-control"
+                          v-model="tweet.content"
+                          :class="{'is-invalid' : tweetCount > 160}"
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <select class="form-select" v-model="tweet.tweetType">
+                  <option
+                      :value="option.value"
+                      v-for="(option,index) in tweetTypes"
+                      :key="index"
+                  > {{ option.name }}
+                  </option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary w-100  ">Tweet</button>
+            </form>
           </div>
         </div>
       </div>

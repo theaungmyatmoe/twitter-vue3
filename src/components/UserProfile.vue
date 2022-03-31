@@ -1,20 +1,13 @@
 <script>
 import TweetItem from "./TweetItem.vue";
-import NavBar from "./NavBar.vue";
+import NavBar from "./NavBar";
+import NewTweet from "./NewTweet";
 
 export default {
   name: 'UserProfile',
-  components: {NavBar, TweetItem},
+  components: {NewTweet, NavBar, TweetItem},
   data() {
     return {
-      tweet: {
-        content: '',
-        tweetType: 'instant'
-      },
-      tweetTypes: [
-        {value: 'draft', name: 'Draft'},
-        {value: 'instant', name: 'Instant Tweet'},
-      ],
       followers: 0,
       user: {
         first_name: 'Aung',
@@ -39,14 +32,8 @@ export default {
     toggleFavorite(id) {
       console.log(`I liked #${id}`)
     },
-    postTweet() {
-      if (this.tweet && this.tweet.tweetType !== 'draft') {
-        this.user.tweets.unshift({
-          ...this.tweet,
-          id: this.user.tweets.length + 1,
-        })
-        this.tweet.content = ''
-      }
+    updateTweets(tweet) {
+      this.user.tweets.unshift(tweet)
     }
   },
   watch: {
@@ -60,9 +47,7 @@ export default {
     full_name() {
       return `${this.user.first_name} ${this.user.last_name}`
     },
-    tweetCount() {
-      return this.tweet.content.length;
-    }
+
   },
 
 }
@@ -83,39 +68,11 @@ export default {
                 <span v-if="user.isAdmin" class="badge bg-success"> Admin </span>
                 <span class="badge bg-primary ms-3">{{ followers }} Followers</span>
               </div>
+              <NewTweet :user="user" @new-tweet="updateTweets"/>
             </div>
           </div>
 
-          <!--             New tweet-->
-          <div class="card mt-3">
-            <div class="card-header">
-              New Tweet
-              ( {{ tweetCount }}/160)
-            </div>
-            <div class="card-body">
-              <form @submit.prevent="postTweet">
-                <div class="mb-3">
-                  <label for="newTweet" class="form-label fw-bold"
-                  >Tweet</label>
-                  <textarea id="newTweet" rows="4" class="form-control"
-                            v-model="tweet.content"
-                            :class="{'is-invalid' : tweetCount > 160}"
-                  ></textarea>
-                </div>
-                <div class="mb-3">
-                  <select class="form-select" v-model="tweet.tweetType">
-                    <option
-                        :value="option.value"
-                        v-for="(option,index) in tweetTypes"
-                        :key="index"
-                    > {{ option.name }}
-                    </option>
-                  </select>
-                </div>
-                <button type="submit" class="btn btn-primary w-100  ">Tweet</button>
-              </form>
-            </div>
-          </div>
+
         </div>
         <div class="col-md-8">
           <TweetItem

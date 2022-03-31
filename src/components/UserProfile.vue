@@ -2,12 +2,13 @@
 import TweetItem from "./TweetItem.vue";
 import NavBar from "./NavBar";
 import NewTweet from "./NewTweet";
+import {reactive, computed, toRefs} from 'vue'
 
 export default {
   name: 'UserProfile',
   components: {NewTweet, NavBar, TweetItem},
-  data() {
-    return {
+  setup(props, ctx) {
+    const state = reactive({
       followers: 0,
       user: {
         first_name: 'Aung',
@@ -20,40 +21,26 @@ export default {
           {id: 2, content: 'Content two'},
         ]
       },
-    }
-  },
-  mounted() {
-    this.followUser()
-  },
-  methods: {
-    followUser() {
-      this.followers++
-    },
-    toggleFavorite(id) {
-      console.log(`I liked #${id}`)
-    },
-    updateTweets(tweet) {
+    })
+
+
+    function updateTweets(tweet) {
       const newTweet = {
         ...tweet,
-        id: this.user.tweets.length + 1
+        id: state.user.tweets.length + 1
       }
-      this.user.tweets.unshift(newTweet)
+      state.user.tweets.unshift(newTweet)
+    }
+
+    const full_name = computed(() => `${this.user.first_name} ${this.user.last_name}`
+    )
+
+    return {
+      ...toRefs(state),
+      updateTweets,
+      full_name
     }
   },
-  watch: {
-    followers(newFollowerCount, oldFollowerCount) {
-      if (newFollowerCount > oldFollowerCount) {
-        console.log('You gained a follower!')
-      }
-    },
-  },
-  computed: {
-    full_name() {
-      return `${this.user.first_name} ${this.user.last_name}`
-    },
-
-  },
-
 }
 </script>
 
@@ -83,7 +70,6 @@ export default {
               v-for="(tweet,index) in user.tweets"
               :key="index"
               :username="user.username"
-              @favorite="toggleFavorite"
               :tweet="tweet"
           />
         </div>

@@ -10,17 +10,12 @@ export default {
       type: Object,
       required: true
     },
-  },
-  methods: {
-    favoriteTweet(id) {
-      this.$emit('favorite', id)
-    }
   }
 }
 </script>
 
 <template>
-  <div class="card my-3" @click="favoriteTweet(tweet.id)">
+  <div class="card my-3" >
     <div class="card-header">
       @{{ username }}
     </div>

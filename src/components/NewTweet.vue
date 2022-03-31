@@ -34,7 +34,6 @@
 <script>
 export default {
   name: "NewTweet",
-  emits: ['new-tweet'],
   props: {
     user: {type: Object, required: true},
   },
@@ -53,11 +52,7 @@ export default {
   methods: {
     postTweet() {
       if (this.tweet && this.tweet.tweetType !== 'draft') {
-        const tweet = {
-          ...this.tweet,
-          id: this.user.tweets.length + 1,
-        }
-        this.$emit('new-tweet', tweet)
+        this.$emit('new-tweet', this.tweet)
         this.tweet.content = ''
       }
     },

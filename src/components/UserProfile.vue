@@ -33,7 +33,11 @@ export default {
       console.log(`I liked #${id}`)
     },
     updateTweets(tweet) {
-      this.user.tweets.unshift(tweet)
+      const newTweet = {
+        ...tweet,
+        id: this.user.tweets.length + 1
+      }
+      this.user.tweets.unshift(newTweet)
     }
   },
   watch: {
@@ -68,7 +72,7 @@ export default {
                 <span v-if="user.isAdmin" class="badge bg-success"> Admin </span>
                 <span class="badge bg-primary ms-3">{{ followers }} Followers</span>
               </div>
-              <NewTweet :user="user" @new-tweet="updateTweets"/>
+              <NewTweet @new-tweet="updateTweets"/>
             </div>
           </div>
 
@@ -79,8 +83,8 @@ export default {
               v-for="(tweet,index) in user.tweets"
               :key="index"
               :username="user.username"
-              :tweet="tweet"
               @favorite="toggleFavorite"
+              :tweet="tweet"
           />
         </div>
       </div>

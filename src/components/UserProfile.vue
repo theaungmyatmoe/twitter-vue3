@@ -1,6 +1,5 @@
 <template>
   <main>
-
     <NavBar :user="user"/>
     <div class="container">
       <div class="row my-3">

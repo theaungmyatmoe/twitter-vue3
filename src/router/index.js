@@ -1,6 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
 import UserProfile from "../components/UserProfile";
 import Home from '../components/Home'
+import store from '../store/index'
 
 const routes = [{
     path: '/', component: Home, name: 'home'
@@ -17,13 +18,16 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-
-    const isAdmin = true;
-    if (to.meta.requiresAdmin && !isAdmin) {
-        return {
-            name: 'home',
+    const user = store.user
+    if (user) {
+        const isAdmin = user.isAdmin
+        if (to.meta.requiresAdmin && !isAdmin) {
+            return {
+                name: 'home',
+            }
         }
     }
+
 })
 
 export default router;

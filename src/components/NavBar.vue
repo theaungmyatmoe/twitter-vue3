@@ -12,27 +12,25 @@
           <!--              <a class="nav-link active" aria-current="page" href="#">Home</a>-->
           <!--            </li>-->
         </ul>
-        <!--        <div class="d-flex">-->
-        <!--          <h5 class="fw-bold font-monospace"> @{{ user.username }}</h5>-->
-        <!--        </div>-->
+        <div class="d-flex">
+          <h5 class="fw-bold font-monospace" v-if="user"> @{{ user.username }}</h5>
+        </div>
       </div>
     </div>
   </nav>
 </template>
 
 <script>
+import {useStore} from 'vuex'
+
 export default {
   name: "NavBar",
-//   props: {
-//     user: {
-//       type: Object,
-//       required: true
-//     }
-//   }
-// }
+  setup() {
+    const store = useStore()
+    const user = store.state.user;
+    return {
+      user
+    }
+  }
 }
 </script>
-
-<style scoped>
-
-</style>
